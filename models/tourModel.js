@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 // const validator = require('validator');
-const AppError = require('./../utlis/appError');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -108,14 +107,6 @@ tourSchema.pre('aggregate', function(next) {
 tourSchema.post(/^find/, function(docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
   next();
-});
-
-tourSchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-    next(new AppError('Tour name must be a unique', 400));
-  } else {
-    next(error);
-  }
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
