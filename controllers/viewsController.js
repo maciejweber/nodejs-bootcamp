@@ -1,6 +1,5 @@
 const Tour = require('./../models/tourModel');
 const catchAsync = require('../utlis/catchAsync');
-const AppError = require('../utlis/appError');
 
 exports.getOverview = catchAsync(async (req, res) => {
   const tours = await Tour.find();
@@ -11,12 +10,13 @@ exports.getOverview = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTour = catchAsync(async (req, res, next) => {
+exports.getTour = catchAsync(async (req, res) => {
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
     fields: 'review rating user'
   });
 
+  //Refused to apply inline style because it violates the following Content Security Policy directive: "style-src
   res.status(200).render('tour', {
     title: tour.name,
     tour: tour
