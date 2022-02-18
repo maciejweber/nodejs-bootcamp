@@ -27,15 +27,18 @@ if (logOutBtn) {
 }
 
 if (userDataForm)
-  userDataForm.addEventListener('submit', e => {
+  userDataForm.addEventListener('submit', async e => {
     e.preventDefault();
     const form = new FormData();
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(form);
+    await updateSettings(form, 'data');
 
-    updateSettings(form, 'data');
+    if (document.getElementById('photo').files[0]) {
+      const updatedPhoto = document.getElementById('photo').files[0].name;
+      document.getElementById('user-photo').src = `img/users/${updatedPhoto}`;
+    }
   });
 
 if (userPasswordForm) {
