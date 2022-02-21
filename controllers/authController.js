@@ -131,16 +131,14 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your passowrd? Submit a patch request with your password and confirmPassword to: ${resetURL}`;
-
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token',
-      message
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user, resetURL).sendPasswordReset();
+    res.status(200).json({
+      status: 'success',
+      message: 'Token send to your email!'
     });
   } catch (err) {
     user.passwordResetToken = undefined;
@@ -153,11 +151,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       )
     );
   }
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Token send to your email!'
-  });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
