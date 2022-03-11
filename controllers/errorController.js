@@ -58,7 +58,6 @@ const sendErrorProd = (err, req, res) => {
     });
   }
   // RENDERED WEBSITE
-  console.log(err);
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
       title: 'Someting went wrong!',
@@ -88,8 +87,6 @@ module.exports = (err, req, res, next) => {
     if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
     if (err.name === 'JsonWebTokenError') error = handleJWTError();
     if (err.name === 'TokenExpiredError') error = handleJWTExpired();
-    console.log(err.message);
-    console.log(error.message);
     sendErrorProd(error, req, res);
   }
 };
